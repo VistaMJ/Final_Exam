@@ -9,22 +9,22 @@ def load_model():
     return model
 
 def import_and_predict(image_data, model):
-    size = (64, 64)
+    size = (128, 128)
     image = ImageOps.fit(image_data, size, Image.LANCZOS)
     image = image.convert('RGB')
     img = np.asarray(image)
     img = img / 255.0 
-    img_reshape = np.reshape(img, (1, 64, 64, 3))
+    img_reshape = np.reshape(img, (1, 128, 128, 3))
     prediction = model.predict(img_reshape)
     return prediction
 
 model = load_model()
 
 st.write("""
-Detecting Pneumonia from Chest X-Ray Images
+Detecting Tumor from head X-Ray Images
 """)
 
-file = st.file_uploader("Choose chest x-ray photo from computer", type=["jpg", "png"])
+file = st.file_uploader("Choose head x-ray photo from computer", type=["jpg", "png"])
 
 if file is None:
     st.text("Please upload an image file")
@@ -32,6 +32,6 @@ else:
     image = Image.open(file)
     st.image(image, use_column_width=True)
     prediction = import_and_predict(image, model)
-    class_names = ['Normal', 'Pneumonia']
+    class_names = ['Normal', 'Tumor']
     string = "OUTPUT: " + class_names[np.argmax(prediction)]
     st.success(string)
